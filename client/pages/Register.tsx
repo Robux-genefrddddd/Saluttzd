@@ -61,8 +61,26 @@ export default function Register() {
   return (
     <div
       className="min-h-screen flex items-center justify-center px-4 py-8 relative overflow-hidden"
-      style={{ backgroundColor: "#000" }}
+      style={{ backgroundColor: "#000000" }}
     >
+      {/* Starfield Background */}
+      <div className="absolute inset-0 overflow-hidden">
+        {[...Array(100)].map((_, i) => (
+          <div
+            key={i}
+            className="absolute rounded-full bg-white"
+            style={{
+              width: Math.random() * 3 + 1 + "px",
+              height: Math.random() * 3 + 1 + "px",
+              left: Math.random() * 100 + "%",
+              top: Math.random() * 100 + "%",
+              opacity: Math.random() * 0.7 + 0.3,
+              animation: `shootingStar ${Math.random() * 3 + 2}s infinite`,
+              animationDelay: Math.random() * 5 + "s",
+            }}
+          />
+        ))}
+      </div>
 
       <div className="w-full max-w-md relative z-10">
         {/* Card Container */}
