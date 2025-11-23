@@ -532,6 +532,36 @@ export default function AdminMaintenance() {
                   className="block text-sm font-medium mb-2"
                   style={{ color: "#CCCCCC" }}
                 >
+                  Expiration (days)
+                </label>
+                <input
+                  type="number"
+                  value={expirationDays}
+                  onChange={(e) =>
+                    setExpirationDays(Math.max(1, parseInt(e.target.value) || 30))
+                  }
+                  min="1"
+                  max="365"
+                  className="w-full px-4 py-2 rounded-lg border focus:outline-none transition-colors"
+                  style={{
+                    backgroundColor: "#0D0D0D",
+                    borderColor: "#1A1A1A",
+                    color: "#FFFFFF",
+                  }}
+                  onFocus={(e) =>
+                    (e.currentTarget.style.borderColor = "#0A84FF")
+                  }
+                  onBlur={(e) =>
+                    (e.currentTarget.style.borderColor = "#1A1A1A")
+                  }
+                />
+              </div>
+
+              <div>
+                <label
+                  className="block text-sm font-medium mb-2"
+                  style={{ color: "#CCCCCC" }}
+                >
                   Status
                 </label>
                 <button
