@@ -5,6 +5,7 @@ import { handleDemo } from "./routes/demo";
 import { handleChat } from "./routes/chat";
 import { handleSecurityCheck } from "./routes/security";
 import { handleCaptchaVerify } from "./routes/captcha";
+import { handleActivateLicense } from "./routes/activate-license";
 
 export function createServer() {
   const app = express();
@@ -30,6 +31,9 @@ export function createServer() {
 
   // Captcha verification route
   app.post("/api/captcha/verify", handleCaptchaVerify);
+
+  // License activation route
+  app.post("/api/activate-license", handleActivateLicense);
 
   return app;
 }
