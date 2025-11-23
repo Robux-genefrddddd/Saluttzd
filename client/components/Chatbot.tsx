@@ -221,20 +221,47 @@ export default function Chatbot() {
             borderColor: "#1A1A1A",
           }}
         >
-          {/* Left: Title and Counter */}
+          {/* Left: Title and Plan Info */}
           <div className="min-w-0 flex items-center gap-4">
             <div>
-              <h1
-                className="text-xl sm:text-2xl font-bold truncate"
-                style={{ color: "#FFFFFF" }}
+              <div className="flex items-center gap-3">
+                <h1
+                  className="text-xl sm:text-2xl font-bold truncate"
+                  style={{ color: "#FFFFFF" }}
+                >
+                  {user?.name}
+                </h1>
+                <span
+                  className="text-xs px-2 py-1 rounded-full font-semibold"
+                  style={{
+                    backgroundColor:
+                      user?.plan === "Gratuit"
+                        ? "#1A1A1A"
+                        : user?.plan === "Forfait Classique"
+                          ? "#064E3B"
+                          : "#0D3B66",
+                    color:
+                      user?.plan === "Gratuit"
+                        ? "#CCCCCC"
+                        : user?.plan === "Forfait Classique"
+                          ? "#10B981"
+                          : "#0A84FF",
+                  }}
+                >
+                  {user?.plan}
+                  {user?.license?.daysRemaining && (
+                    <span> ({user.license.daysRemaining}d)</span>
+                  )}
+                </span>
+              </div>
+              <p
+                className="text-xs mt-1"
+                style={{ color: "#888888" }}
               >
-                Chat
-              </h1>
-              {user?.plan === "Gratuit" && (
-                <p className="text-xs" style={{ color: "#999999" }}>
-                  Messages: {user?.messageCount || 0}/100
-                </p>
-              )}
+                {user?.plan === "Gratuit"
+                  ? `Messages: ${user?.messageCount || 0}/10`
+                  : `Today: ${user?.todayMessageCount || 0}/${user?.plan === "Forfait Classique" ? "1000" : "5000"}`}
+              </p>
             </div>
           </div>
 
@@ -243,7 +270,7 @@ export default function Chatbot() {
             {/* Upgrade Button - Only for Free Plan */}
             {user?.plan === "Gratuit" && (
               <button
-                onClick={() => setLicenseDialogOpen(true)}
+                onClick={() => setShowUpgradeModal(true)}
                 className="flex items-center gap-2 px-3 py-2 rounded-lg transition-colors duration-200"
                 title="Upgrade plan"
                 style={{
