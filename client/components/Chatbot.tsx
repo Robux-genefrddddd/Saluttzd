@@ -92,16 +92,45 @@ export default function Chatbot() {
   return (
     <div className="flex flex-col h-screen bg-white dark:bg-[#0a0a0a]">
       {/* Header */}
-      <div className="border-b border-gray-200 dark:border-gray-900 px-6 py-4 sm:px-8 bg-white dark:bg-black flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl sm:text-3xl font-bold text-black dark:text-white">
-            Chat
-          </h1>
-          <p className="text-sm text-gray-600 dark:text-gray-500 mt-1">
-            Your AI Assistant
-          </p>
+      <div className="border-b border-gray-200 dark:border-gray-900 px-4 py-3 sm:px-6 md:px-8 bg-white dark:bg-black flex items-center justify-between gap-4">
+        {/* Left: Logo & Menu */}
+        <div className="flex items-center gap-3 sm:gap-4 min-w-0">
+          {/* Minimalist Logo */}
+          <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-black dark:bg-white flex items-center justify-center">
+            <span className="text-white dark:text-black font-bold text-lg">✦</span>
+          </div>
+          {/* Title - Hidden on very small screens */}
+          <div className="hidden sm:block min-w-0">
+            <h1 className="text-xl sm:text-2xl font-bold text-black dark:text-white truncate">
+              Chat
+            </h1>
+            <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-500">
+              Your AI Assistant
+            </p>
+          </div>
         </div>
-        <Menu isDark={isDark} onThemeToggle={handleThemeToggle} />
+
+        {/* Right: Action Buttons */}
+        <div className="flex items-center gap-2 flex-shrink-0">
+          {/* Quick Action Button */}
+          <button
+            className="p-2 hover:bg-gray-100 dark:hover:bg-gray-900 rounded-lg transition-colors duration-200"
+            title="New chat"
+          >
+            <Plus size={20} className="text-black dark:text-white" />
+          </button>
+
+          {/* User Profile Button */}
+          <button
+            className="p-2 hover:bg-gray-100 dark:hover:bg-gray-900 rounded-lg transition-colors duration-200"
+            title="User profile"
+          >
+            <User size={20} className="text-black dark:text-white" />
+          </button>
+
+          {/* Hamburger Menu */}
+          <Menu isDark={isDark} onThemeToggle={handleThemeToggle} />
+        </div>
       </div>
 
       {/* Messages Container */}
