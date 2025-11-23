@@ -112,7 +112,7 @@ export default function AdminMaintenance() {
   };
 
   const generateLicenseKey = (): string => {
-    const prefix = selectedPlan === "Plus" ? "PLUS" : "ENT";
+    const prefix = selectedPlan === "Forfait Classique" ? "CLASSI" : "PRO";
     const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
     let result = prefix + "-";
     for (let i = 0; i < 16; i++) {
