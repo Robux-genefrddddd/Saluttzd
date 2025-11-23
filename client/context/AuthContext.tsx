@@ -15,7 +15,14 @@ import { auth, db } from "@/lib/firebase";
 import { doc, setDoc, getDoc } from "firebase/firestore";
 import { checkSecurityBeforeAuth } from "@/lib/securityCheck";
 
-export type Plan = "Gratuit" | "Plus" | "Entreprise";
+export type Plan = "Gratuit" | "Forfait Classique" | "Forfait Pro";
+
+export interface License {
+  key: string;
+  plan: Plan;
+  expiresAt: string;
+  daysRemaining: number;
+}
 
 export interface User {
   id: string;
@@ -23,7 +30,9 @@ export interface User {
   email: string;
   plan: Plan;
   messageCount?: number;
-  licenseKey?: string;
+  todayMessageCount?: number;
+  messageCountDate?: string;
+  license?: License;
 }
 
 interface AuthContextType {
