@@ -73,11 +73,38 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
               if (userDoc.exists()) {
                 const userData = userDoc.data();
+                let currentPlan = userData.plan || "Gratuit";
+                let license = undefined;
+
+                if (userData.license && userData.license.expiresAt) {
+                  const expiresAt = new Date(userData.license.expiresAt);
+                  const now = new Date();
+                  const daysRemaining = Math.ceil(
+                    (expiresAt.getTime() - now.getTime()) / (1000 * 60 * 60 * 24)
+                  );
+
+                  if (daysRemaining > 0) {
+                    license = {
+                      key: userData.license.key,
+                      plan: userData.license.plan,
+                      expiresAt: userData.license.expiresAt,
+                      daysRemaining,
+                    };
+                    currentPlan = userData.license.plan;
+                  } else {
+                    currentPlan = "Gratuit";
+                  }
+                }
+
                 setUser({
                   id: firebaseUser.uid,
                   name: userData.name,
                   email: firebaseUser.email || "",
-                  plan: userData.plan || "Gratuit",
+                  plan: currentPlan,
+                  messageCount: userData.messageCount || 0,
+                  todayMessageCount: userData.todayMessageCount || 0,
+                  messageCountDate: userData.messageCountDate,
+                  license,
                 });
               } else {
                 setUser({
