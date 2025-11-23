@@ -21,34 +21,35 @@ export default function Login() {
     setError("");
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsLoading(true);
+    setError("");
 
     if (!formData.email.trim()) {
       setError("Email is required");
-      setIsLoading(false);
       return;
     }
 
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
       setError("Please enter a valid email");
-      setIsLoading(false);
       return;
     }
 
     if (!formData.password) {
       setError("Password is required");
-      setIsLoading(false);
       return;
     }
 
-    // Simulate login delay for animation effect
-    setTimeout(() => {
-      register("User", formData.email, formData.password);
-      setIsLoading(false);
+    try {
+      setIsLoading(true);
+      await login(formData.email, formData.password);
       navigate("/");
-    }, 600);
+    } catch (err) {
+      const errorMsg = err instanceof Error ? err.message : "Login failed";
+      setError(errorMsg);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
