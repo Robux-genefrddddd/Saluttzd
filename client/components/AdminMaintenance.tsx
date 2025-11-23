@@ -13,6 +13,8 @@ import {
   EyeOff,
 } from "lucide-react";
 import { copyToClipboard } from "@/lib/codeDisplay";
+import { collection, addDoc, updateDoc, deleteDoc, doc, getDocs, query, orderBy } from "firebase/firestore";
+import { db } from "@/lib/firebase";
 
 interface License {
   id: string;
