@@ -701,13 +701,13 @@ export default function AdminMaintenance() {
                         className="text-left py-4 px-4 font-semibold"
                         style={{ color: "#CCCCCC" }}
                       >
-                        Created
+                        Expires
                       </th>
                       <th
                         className="text-left py-4 px-4 font-semibold"
                         style={{ color: "#CCCCCC" }}
                       >
-                        Last Used
+                        Created
                       </th>
                       <th
                         className="text-left py-4 px-4 font-semibold"
