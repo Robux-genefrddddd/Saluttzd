@@ -1,5 +1,5 @@
 import { RequestHandler } from "express";
-import { doc, getDoc, setDoc } from "firebase/firestore";
+import { doc, getDoc, setDoc, query, collection, where, getDocs } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 
 export const handleActivateLicense: RequestHandler = async (req, res) => {
@@ -11,22 +11,25 @@ export const handleActivateLicense: RequestHandler = async (req, res) => {
       return;
     }
 
-    const adminLicenses = localStorage.getItem("admin_licenses");
-    if (!adminLicenses) {
+    const licensesCollection = collection(db, "licenses");
+    const q = query(licensesCollection, where("key", "==", licenseKey));
+    const querySnapshot = await getDocs(q);
+
+    if (querySnapshot.empty) {
       res.status(400).json({ error: "Invalid license key" });
       return;
     }
 
-    const licenses = JSON.parse(adminLicenses);
-    const license = licenses.find(
-      (lic: any) =>
-        lic.key === licenseKey &&
-        lic.status === "active" &&
-        (!lic.assignedTo || lic.assignedTo === userId)
-    );
+    const licenseDoc = querySnapshot.docs[0];
+    const license = licenseDoc.data();
 
-    if (!license) {
-      res.status(400).json({ error: "Invalid or inactive license key" });
+    if (license.status !== "active") {
+      res.status(400).json({ error: "License is inactive" });
+      return;
+    }
+
+    if (license.assignedTo && license.assignedTo !== userId) {
+      res.status(400).json({ error: "License is already assigned to another account" });
       return;
     }
 
