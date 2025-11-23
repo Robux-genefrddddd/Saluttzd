@@ -177,7 +177,7 @@ export default function Chatbot() {
   };
 
   return (
-    <div className="flex h-screen bg-white dark:bg-[#0a0a0a]">
+    <div className="flex h-screen" style={{ backgroundColor: "#000000" }}>
       {/* Fixed Sidebar */}
       <Sidebar
         conversations={conversations}
