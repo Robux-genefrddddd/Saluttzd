@@ -59,7 +59,7 @@ export const handleChat: RequestHandler = async (req, res) => {
           "X-Title": "Chat Application",
         },
         body: JSON.stringify({
-          model: "openai/gpt-3.5-turbo",
+          model: "x-ai/grok-4.1-fast",
           messages: messagesWithSystem,
           temperature: 0.7,
           max_tokens: 1024,
