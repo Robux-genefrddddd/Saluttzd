@@ -38,8 +38,8 @@ export default function AdminMaintenance() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [password, setPassword] = useState("");
   const [licenses, setLicenses] = useState<License[]>([]);
-  const [selectedPlan, setSelectedPlan] = useState<"Plus" | "Entreprise">(
-    "Plus"
+  const [selectedPlan, setSelectedPlan] = useState<"Forfait Classique" | "Forfait Pro">(
+    "Forfait Classique"
   );
   const [copied, setCopied] = useState<string | null>(null);
   const [bulkCount, setBulkCount] = useState(1);
