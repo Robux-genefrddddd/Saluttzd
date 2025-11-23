@@ -8,7 +8,11 @@ interface UpgradeModalProps {
   reason?: string;
 }
 
-export default function UpgradeModal({ isOpen, onClose, reason }: UpgradeModalProps) {
+export default function UpgradeModal({
+  isOpen,
+  onClose,
+  reason,
+}: UpgradeModalProps) {
   const { activateLicense } = useAuth();
   const [licenseKey, setLicenseKey] = useState("");
   const [loading, setLoading] = useState(false);
@@ -33,7 +37,9 @@ export default function UpgradeModal({ isOpen, onClose, reason }: UpgradeModalPr
         setLicenseKey("");
       }, 1500);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to activate license");
+      setError(
+        err instanceof Error ? err.message : "Failed to activate license",
+      );
     } finally {
       setLoading(false);
     }
@@ -64,7 +70,11 @@ export default function UpgradeModal({ isOpen, onClose, reason }: UpgradeModalPr
         </button>
 
         <div className="text-center mb-6">
-          <Zap size={48} style={{ color: "#0A84FF" }} className="mx-auto mb-4" />
+          <Zap
+            size={48}
+            style={{ color: "#0A84FF" }}
+            className="mx-auto mb-4"
+          />
           <h2 className="text-2xl font-bold" style={{ color: "#FFFFFF" }}>
             Upgrade Your Plan
           </h2>
@@ -110,10 +120,14 @@ export default function UpgradeModal({ isOpen, onClose, reason }: UpgradeModalPr
                   color: "#FFFFFF",
                 }}
                 onFocus={(e) =>
-                  (e.currentTarget.style.borderColor = error ? "#EF4444" : "#0A84FF")
+                  (e.currentTarget.style.borderColor = error
+                    ? "#EF4444"
+                    : "#0A84FF")
                 }
                 onBlur={(e) =>
-                  (e.currentTarget.style.borderColor = error ? "#EF4444" : "#1A1A1A")
+                  (e.currentTarget.style.borderColor = error
+                    ? "#EF4444"
+                    : "#1A1A1A")
                 }
               />
               {error && (
@@ -134,12 +148,14 @@ export default function UpgradeModal({ isOpen, onClose, reason }: UpgradeModalPr
               }}
               onMouseEnter={(e) => {
                 if (!loading) {
-                  (e.currentTarget as HTMLElement).style.backgroundColor = "#0070DD";
+                  (e.currentTarget as HTMLElement).style.backgroundColor =
+                    "#0070DD";
                 }
               }}
               onMouseLeave={(e) => {
                 if (!loading) {
-                  (e.currentTarget as HTMLElement).style.backgroundColor = "#0A84FF";
+                  (e.currentTarget as HTMLElement).style.backgroundColor =
+                    "#0A84FF";
                 }
               }}
             >

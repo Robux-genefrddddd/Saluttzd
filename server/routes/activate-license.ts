@@ -1,5 +1,13 @@
 import { RequestHandler } from "express";
-import { doc, getDoc, setDoc, query, collection, where, getDocs } from "firebase/firestore";
+import {
+  doc,
+  getDoc,
+  setDoc,
+  query,
+  collection,
+  where,
+  getDocs,
+} from "firebase/firestore";
 import { db } from "@/lib/firebase";
 
 export const handleActivateLicense: RequestHandler = async (req, res) => {
@@ -29,7 +37,9 @@ export const handleActivateLicense: RequestHandler = async (req, res) => {
     }
 
     if (license.assignedTo && license.assignedTo !== userId) {
-      res.status(400).json({ error: "License is already assigned to another account" });
+      res
+        .status(400)
+        .json({ error: "License is already assigned to another account" });
       return;
     }
 
@@ -55,11 +65,11 @@ export const handleActivateLicense: RequestHandler = async (req, res) => {
           expiresAt: license.expiresAt,
         },
       },
-      { merge: true }
+      { merge: true },
     );
 
     const daysRemaining = Math.ceil(
-      (expiresAt.getTime() - now.getTime()) / (1000 * 60 * 60 * 24)
+      (expiresAt.getTime() - now.getTime()) / (1000 * 60 * 60 * 24),
     );
 
     res.json({
@@ -74,7 +84,8 @@ export const handleActivateLicense: RequestHandler = async (req, res) => {
   } catch (error) {
     console.error("License activation error:", error);
     res.status(500).json({
-      error: error instanceof Error ? error.message : "License activation failed",
+      error:
+        error instanceof Error ? error.message : "License activation failed",
     });
   }
 };

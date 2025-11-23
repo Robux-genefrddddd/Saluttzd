@@ -27,7 +27,12 @@ interface Conversation {
 export default function Chatbot() {
   const navigate = useNavigate();
   const { user } = useAuth();
-  const { getMessageLimitInfo, handleSendMessage: checkAndSendMessage, showUpgradeModal, setShowUpgradeModal } = useMessageLimit();
+  const {
+    getMessageLimitInfo,
+    handleSendMessage: checkAndSendMessage,
+    showUpgradeModal,
+    setShowUpgradeModal,
+  } = useMessageLimit();
 
   const [conversations, setConversations] = useState<Conversation[]>(() => {
     const newId = Date.now().toString();
@@ -254,10 +259,7 @@ export default function Chatbot() {
                   )}
                 </span>
               </div>
-              <p
-                className="text-xs mt-1"
-                style={{ color: "#888888" }}
-              >
+              <p className="text-xs mt-1" style={{ color: "#888888" }}>
                 {user?.plan === "Gratuit"
                   ? `Messages: ${user?.messageCount || 0}/10`
                   : `Today: ${user?.todayMessageCount || 0}/${user?.plan === "Forfait Classique" ? "1000" : "5000"}`}

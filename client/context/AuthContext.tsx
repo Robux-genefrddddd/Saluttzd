@@ -80,7 +80,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
                   const expiresAt = new Date(userData.license.expiresAt);
                   const now = new Date();
                   const daysRemaining = Math.ceil(
-                    (expiresAt.getTime() - now.getTime()) / (1000 * 60 * 60 * 24)
+                    (expiresAt.getTime() - now.getTime()) /
+                      (1000 * 60 * 60 * 24),
                   );
 
                   if (daysRemaining > 0) {
@@ -279,7 +280,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       const expiresAt = new Date(license.expiresAt);
       const now = new Date();
       const daysRemaining = Math.ceil(
-        (expiresAt.getTime() - now.getTime()) / (1000 * 60 * 60 * 24)
+        (expiresAt.getTime() - now.getTime()) / (1000 * 60 * 60 * 24),
       );
 
       const updatedUser = {
@@ -324,7 +325,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           todayMessageCount: todayCount,
           messageCountDate: new Date().toISOString(),
         },
-        { merge: true }
+        { merge: true },
       );
 
       setUser({
@@ -343,21 +344,30 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
     if (user.plan === "Gratuit") {
       if ((user.messageCount || 0) >= 10) {
-        return { allowed: false, reason: "Free plan limit reached (10 messages)" };
+        return {
+          allowed: false,
+          reason: "Free plan limit reached (10 messages)",
+        };
       }
       return { allowed: true };
     }
 
     if (user.plan === "Forfait Classique") {
       if ((user.todayMessageCount || 0) >= 1000) {
-        return { allowed: false, reason: "Daily limit reached (1000 messages)" };
+        return {
+          allowed: false,
+          reason: "Daily limit reached (1000 messages)",
+        };
       }
       return { allowed: true };
     }
 
     if (user.plan === "Forfait Pro") {
       if ((user.todayMessageCount || 0) >= 5000) {
-        return { allowed: false, reason: "Daily limit reached (5000 messages)" };
+        return {
+          allowed: false,
+          reason: "Daily limit reached (5000 messages)",
+        };
       }
       return { allowed: true };
     }

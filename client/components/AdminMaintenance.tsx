@@ -13,7 +13,16 @@ import {
   EyeOff,
 } from "lucide-react";
 import { copyToClipboard } from "@/lib/codeDisplay";
-import { collection, addDoc, updateDoc, deleteDoc, doc, getDocs, query, orderBy } from "firebase/firestore";
+import {
+  collection,
+  addDoc,
+  updateDoc,
+  deleteDoc,
+  doc,
+  getDocs,
+  query,
+  orderBy,
+} from "firebase/firestore";
 import { db } from "@/lib/firebase";
 
 interface License {
@@ -40,9 +49,9 @@ export default function AdminMaintenance() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [password, setPassword] = useState("");
   const [licenses, setLicenses] = useState<License[]>([]);
-  const [selectedPlan, setSelectedPlan] = useState<"Forfait Classique" | "Forfait Pro">(
-    "Forfait Classique"
-  );
+  const [selectedPlan, setSelectedPlan] = useState<
+    "Forfait Classique" | "Forfait Pro"
+  >("Forfait Classique");
   const [copied, setCopied] = useState<string | null>(null);
   const [bulkCount, setBulkCount] = useState(1);
   const [expirationDays, setExpirationDays] = useState(30);
@@ -98,8 +107,7 @@ export default function AdminMaintenance() {
   const updateStats = () => {
     const today = new Date().toDateString();
     const generatedToday = licenses.filter(
-      (lic) =>
-        new Date(lic.createdAt).toDateString() === today
+      (lic) => new Date(lic.createdAt).toDateString() === today,
     ).length;
 
     setStats({
@@ -253,7 +261,11 @@ export default function AdminMaintenance() {
           }}
         >
           <div className="mb-8 text-center">
-            <Shield size={48} style={{ color: "#0A84FF" }} className="mx-auto mb-4" />
+            <Shield
+              size={48}
+              style={{ color: "#0A84FF" }}
+              className="mx-auto mb-4"
+            />
             <h1 className="text-3xl font-bold" style={{ color: "#FFFFFF" }}>
               Admin Panel
             </h1>
@@ -300,12 +312,8 @@ export default function AdminMaintenance() {
                   borderColor: "#1A1A1A",
                   color: "#FFFFFF",
                 }}
-                onFocus={(e) =>
-                  (e.currentTarget.style.borderColor = "#0A84FF")
-                }
-                onBlur={(e) =>
-                  (e.currentTarget.style.borderColor = "#1A1A1A")
-                }
+                onFocus={(e) => (e.currentTarget.style.borderColor = "#0A84FF")}
+                onBlur={(e) => (e.currentTarget.style.borderColor = "#1A1A1A")}
               />
             </div>
             <button
@@ -328,10 +336,7 @@ export default function AdminMaintenance() {
   }
 
   return (
-    <div
-      className="min-h-screen"
-      style={{ backgroundColor: "#000000" }}
-    >
+    <div className="min-h-screen" style={{ backgroundColor: "#000000" }}>
       {/* Header */}
       <div
         className="border-b p-6"
@@ -387,7 +392,10 @@ export default function AdminMaintenance() {
                   <p style={{ color: "#888888" }} className="text-sm">
                     Total Keys
                   </p>
-                  <p className="text-3xl font-bold mt-2" style={{ color: "#FFFFFF" }}>
+                  <p
+                    className="text-3xl font-bold mt-2"
+                    style={{ color: "#FFFFFF" }}
+                  >
                     {stats.totalKeys}
                   </p>
                 </div>
@@ -407,7 +415,10 @@ export default function AdminMaintenance() {
                   <p style={{ color: "#888888" }} className="text-sm">
                     Active Keys
                   </p>
-                  <p className="text-3xl font-bold mt-2" style={{ color: "#10B981" }}>
+                  <p
+                    className="text-3xl font-bold mt-2"
+                    style={{ color: "#10B981" }}
+                  >
                     {stats.activeKeys}
                   </p>
                 </div>
@@ -427,7 +438,10 @@ export default function AdminMaintenance() {
                   <p style={{ color: "#888888" }} className="text-sm">
                     Maintenance
                   </p>
-                  <p className="text-3xl font-bold mt-2" style={{ color: "#F59E0B" }}>
+                  <p
+                    className="text-3xl font-bold mt-2"
+                    style={{ color: "#F59E0B" }}
+                  >
                     {stats.inMaintenance}
                   </p>
                 </div>
@@ -447,7 +461,10 @@ export default function AdminMaintenance() {
                   <p style={{ color: "#888888" }} className="text-sm">
                     Generated Today
                   </p>
-                  <p className="text-3xl font-bold mt-2" style={{ color: "#0A84FF" }}>
+                  <p
+                    className="text-3xl font-bold mt-2"
+                    style={{ color: "#0A84FF" }}
+                  >
                     {stats.generatedToday}
                   </p>
                 </div>
@@ -464,7 +481,10 @@ export default function AdminMaintenance() {
               borderColor: "#1A1A1A",
             }}
           >
-            <h2 className="text-2xl font-bold mb-6" style={{ color: "#FFFFFF" }}>
+            <h2
+              className="text-2xl font-bold mb-6"
+              style={{ color: "#FFFFFF" }}
+            >
               Generate New License Keys
             </h2>
 
@@ -479,7 +499,9 @@ export default function AdminMaintenance() {
                 <select
                   value={selectedPlan}
                   onChange={(e) =>
-                    setSelectedPlan(e.target.value as "Forfait Classique" | "Forfait Pro")
+                    setSelectedPlan(
+                      e.target.value as "Forfait Classique" | "Forfait Pro",
+                    )
                   }
                   className="w-full px-4 py-2 rounded-lg border focus:outline-none transition-colors"
                   style={{
@@ -540,7 +562,9 @@ export default function AdminMaintenance() {
                   type="number"
                   value={expirationDays}
                   onChange={(e) =>
-                    setExpirationDays(Math.max(1, parseInt(e.target.value) || 30))
+                    setExpirationDays(
+                      Math.max(1, parseInt(e.target.value) || 30),
+                    )
                   }
                   min="1"
                   max="365"
@@ -570,9 +594,7 @@ export default function AdminMaintenance() {
                   onClick={() => setMaintenanceMode(!maintenanceMode)}
                   className="w-full px-4 py-2 rounded-lg border font-medium transition-colors"
                   style={{
-                    backgroundColor: maintenanceMode
-                      ? "#1A4D2E"
-                      : "#2A1A00",
+                    backgroundColor: maintenanceMode ? "#1A4D2E" : "#2A1A00",
                     borderColor: maintenanceMode ? "#4ADE80" : "#F59E0B",
                     color: maintenanceMode ? "#4ADE80" : "#F59E0B",
                   }}
@@ -665,7 +687,10 @@ export default function AdminMaintenance() {
               borderColor: "#1A1A1A",
             }}
           >
-            <h2 className="text-2xl font-bold mb-6" style={{ color: "#FFFFFF" }}>
+            <h2
+              className="text-2xl font-bold mb-6"
+              style={{ color: "#FFFFFF" }}
+            >
               License Keys ({licenses.length})
             </h2>
 
@@ -677,10 +702,7 @@ export default function AdminMaintenance() {
               <div className="overflow-x-auto">
                 <table className="w-full">
                   <thead>
-                    <tr
-                      style={{ borderColor: "#1A1A1A" }}
-                      className="border-b"
-                    >
+                    <tr style={{ borderColor: "#1A1A1A" }} className="border-b">
                       <th
                         className="text-left py-4 px-4 font-semibold"
                         style={{ color: "#CCCCCC" }}
@@ -726,7 +748,10 @@ export default function AdminMaintenance() {
                         style={{ borderColor: "#1A1A1A" }}
                         className="border-b hover:bg-white/5 transition-colors"
                       >
-                        <td className="py-4 px-4 font-mono text-sm" style={{ color: "#FFFFFF" }}>
+                        <td
+                          className="py-4 px-4 font-mono text-sm"
+                          style={{ color: "#FFFFFF" }}
+                        >
                           {license.key}
                         </td>
                         <td className="py-4 px-4" style={{ color: "#CCCCCC" }}>
@@ -751,7 +776,10 @@ export default function AdminMaintenance() {
                               : "Maintenance"}
                           </span>
                         </td>
-                        <td className="py-4 px-4 text-sm" style={{ color: "#888888" }}>
+                        <td
+                          className="py-4 px-4 text-sm"
+                          style={{ color: "#888888" }}
+                        >
                           {editingId === license.id ? (
                             <div className="flex gap-2">
                               <input
@@ -770,7 +798,7 @@ export default function AdminMaintenance() {
                                   if (e.key === "Enter") {
                                     handleUpdateExpiration(
                                       license.id,
-                                      parseInt(e.currentTarget.value) || 30
+                                      parseInt(e.currentTarget.value) || 30,
                                     );
                                   }
                                 }}
@@ -781,10 +809,11 @@ export default function AdminMaintenance() {
                                     license.id,
                                     parseInt(
                                       (
-                                        e.currentTarget.parentElement
-                                          ?.querySelector("input") as HTMLInputElement
-                                      )?.value
-                                    ) || 30
+                                        e.currentTarget.parentElement?.querySelector(
+                                          "input",
+                                        ) as HTMLInputElement
+                                      )?.value,
+                                    ) || 30,
                                   )
                                 }
                                 className="px-2 py-1 rounded text-xs font-semibold"
@@ -802,12 +831,17 @@ export default function AdminMaintenance() {
                               style={{ cursor: "pointer", color: "#10B981" }}
                             >
                               {license.expiresAt
-                                ? new Date(license.expiresAt).toLocaleDateString()
+                                ? new Date(
+                                    license.expiresAt,
+                                  ).toLocaleDateString()
                                 : "Click to set"}
                             </div>
                           )}
                         </td>
-                        <td className="py-4 px-4 text-sm" style={{ color: "#888888" }}>
+                        <td
+                          className="py-4 px-4 text-sm"
+                          style={{ color: "#888888" }}
+                        >
                           {new Date(license.createdAt).toLocaleDateString()}
                         </td>
                         <td className="py-4 px-4">
@@ -844,10 +878,10 @@ export default function AdminMaintenance() {
                                   new Set(
                                     showPasswords.has(license.id)
                                       ? Array.from(showPasswords).filter(
-                                          (id) => id !== license.id
+                                          (id) => id !== license.id,
                                         )
-                                      : [...showPasswords, license.id]
-                                  )
+                                      : [...showPasswords, license.id],
+                                  ),
                                 )
                               }
                               className="p-2 rounded transition-colors"
