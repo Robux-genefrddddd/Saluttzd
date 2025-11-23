@@ -445,10 +445,11 @@ export default function Chatbot() {
         />
       </div>
 
-      {/* License Dialog */}
-      <LicenseDialog
-        isOpen={licenseDialogOpen}
-        onClose={() => setLicenseDialogOpen(false)}
+      {/* Upgrade Modal */}
+      <UpgradeModal
+        isOpen={showUpgradeModal}
+        onClose={() => setShowUpgradeModal(false)}
+        reason={getMessageLimitInfo().reason}
       />
     </div>
   );
