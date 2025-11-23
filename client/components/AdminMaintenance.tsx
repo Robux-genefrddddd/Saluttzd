@@ -750,12 +750,63 @@ export default function AdminMaintenance() {
                           </span>
                         </td>
                         <td className="py-4 px-4 text-sm" style={{ color: "#888888" }}>
-                          {new Date(license.createdAt).toLocaleDateString()}
+                          {editingId === license.id ? (
+                            <div className="flex gap-2">
+                              <input
+                                type="number"
+                                min="1"
+                                max="365"
+                                defaultValue={30}
+                                className="px-2 py-1 rounded text-xs"
+                                style={{
+                                  backgroundColor: "#0D0D0D",
+                                  borderColor: "#1A1A1A",
+                                  color: "#FFFFFF",
+                                  width: "60px",
+                                }}
+                                onKeyDown={(e) => {
+                                  if (e.key === "Enter") {
+                                    handleUpdateExpiration(
+                                      license.id,
+                                      parseInt(e.currentTarget.value) || 30
+                                    );
+                                  }
+                                }}
+                              />
+                              <button
+                                onClick={() =>
+                                  handleUpdateExpiration(
+                                    license.id,
+                                    parseInt(
+                                      (
+                                        e.currentTarget.parentElement
+                                          ?.querySelector("input") as HTMLInputElement
+                                      )?.value
+                                    ) || 30
+                                  )
+                                }
+                                className="px-2 py-1 rounded text-xs font-semibold"
+                                style={{
+                                  backgroundColor: "#0A84FF",
+                                  color: "#FFFFFF",
+                                }}
+                              >
+                                Set
+                              </button>
+                            </div>
+                          ) : (
+                            <div
+                              onClick={() => setEditingId(license.id)}
+                              style={{ cursor: "pointer", color: "#10B981" }}
+                            >
+                              {license.expiresAt
+                                ? new Date(license.expiresAt).toLocaleDateString()
+                                : "Click to set"}
+                            </div>
+                          )}
                         </td>
                         <td className="py-4 px-4 text-sm" style={{ color: "#888888" }}>
-                          {license.lastUsed
-                            ? new Date(license.lastUsed).toLocaleDateString()
-                            : "Never"}
+                          {new Date(license.createdAt).toLocaleDateString()}
                         </td>
                         <td className="py-4 px-4">
                           <div className="flex gap-2">
