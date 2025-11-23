@@ -42,9 +42,9 @@ interface AuthContextType {
   register: (name: string, email: string, password: string) => Promise<void>;
   login: (email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
-  updatePlan: (plan: Plan) => Promise<void>;
+  activateLicense: (licenseKey: string) => Promise<void>;
   incrementMessageCount: () => Promise<void>;
-  canSendMessage: () => boolean;
+  canSendMessage: () => { allowed: boolean; reason?: string };
   error: string | null;
 }
 
