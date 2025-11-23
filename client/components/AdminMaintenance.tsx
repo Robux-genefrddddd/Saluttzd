@@ -43,6 +43,8 @@ export default function AdminMaintenance() {
   );
   const [copied, setCopied] = useState<string | null>(null);
   const [bulkCount, setBulkCount] = useState(1);
+  const [expirationDays, setExpirationDays] = useState(30);
+  const [editingId, setEditingId] = useState<string | null>(null);
   const [stats, setStats] = useState<MaintenanceStats>({
     totalKeys: 0,
     activeKeys: 0,
