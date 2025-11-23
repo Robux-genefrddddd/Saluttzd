@@ -17,12 +17,14 @@ import { copyToClipboard } from "@/lib/codeDisplay";
 interface License {
   id: string;
   key: string;
-  plan: "Gratuit" | "Plus" | "Entreprise";
+  plan: "Gratuit" | "Forfait Classique" | "Forfait Pro";
   createdAt: Date;
   usedBy?: string;
   isActive: boolean;
   status: "maintenance" | "active" | "inactive";
   lastUsed?: Date;
+  expiresAt?: string;
+  assignedTo?: string;
 }
 
 interface MaintenanceStats {
