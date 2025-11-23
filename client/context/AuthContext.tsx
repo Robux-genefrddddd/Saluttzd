@@ -374,7 +374,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         register,
         login,
         logout,
-        updatePlan,
+        activateLicense,
         incrementMessageCount,
         canSendMessage,
         error,
