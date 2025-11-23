@@ -466,7 +466,7 @@ export default function AdminMaintenance() {
               Generate New License Keys
             </h2>
 
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+            <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mb-6">
               <div>
                 <label
                   className="block text-sm font-medium mb-2"
@@ -477,7 +477,7 @@ export default function AdminMaintenance() {
                 <select
                   value={selectedPlan}
                   onChange={(e) =>
-                    setSelectedPlan(e.target.value as "Plus" | "Entreprise")
+                    setSelectedPlan(e.target.value as "Forfait Classique" | "Forfait Pro")
                   }
                   className="w-full px-4 py-2 rounded-lg border focus:outline-none transition-colors"
                   style={{
@@ -492,8 +492,8 @@ export default function AdminMaintenance() {
                     (e.currentTarget.style.borderColor = "#1A1A1A")
                   }
                 >
-                  <option value="Plus">Plus Plan</option>
-                  <option value="Entreprise">Entreprise Plan</option>
+                  <option value="Forfait Classique">Forfait Classique</option>
+                  <option value="Forfait Pro">Forfait Pro</option>
                 </select>
               </div>
 
