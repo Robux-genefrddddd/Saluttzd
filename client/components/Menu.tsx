@@ -68,7 +68,7 @@ export default function Menu({ isDark, onThemeToggle }: MenuProps) {
       {/* Overlay */}
       {isOpen && (
         <div
-          className="fixed inset-0 bg-black bg-opacity-40 dark:bg-opacity-50 z-40 transition-opacity duration-300"
+          className="fixed inset-0 bg-black bg-opacity-30 dark:bg-opacity-60 z-40 transition-opacity duration-300 backdrop-blur-sm"
           onClick={() => setIsOpen(false)}
         />
       )}
@@ -78,6 +78,11 @@ export default function Menu({ isDark, onThemeToggle }: MenuProps) {
         className={`fixed top-0 left-0 h-screen w-64 sm:w-72 bg-white dark:bg-black border-r border-gray-200 dark:border-gray-900 shadow-2xl z-50 transition-transform duration-300 ease-out ${
           isOpen ? "translate-x-0" : "-translate-x-full"
         }`}
+        style={{
+          boxShadow: isOpen
+            ? "0 25px 50px -12px rgba(0, 0, 0, 0.25)"
+            : "none",
+        }}
       >
         {/* Menu Header */}
         <div className="px-6 py-6 border-b border-gray-200 dark:border-gray-900">
