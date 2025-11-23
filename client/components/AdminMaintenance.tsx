@@ -171,6 +171,24 @@ export default function AdminMaintenance() {
     localStorage.setItem("admin_licenses", JSON.stringify(updated));
   };
 
+  const handleUpdateExpiration = (id: string, days: number) => {
+    const expiresAt = new Date();
+    expiresAt.setDate(expiresAt.getDate() + days);
+
+    const updated = licenses.map((lic) => {
+      if (lic.id === id) {
+        return {
+          ...lic,
+          expiresAt: expiresAt.toISOString(),
+        };
+      }
+      return lic;
+    });
+    setLicenses(updated);
+    localStorage.setItem("admin_licenses", JSON.stringify(updated));
+    setEditingId(null);
+  };
+
   const downloadAsCSV = () => {
     const headers = ["Key", "Plan", "Status", "Created Date", "Last Used"];
     const rows = licenses.map((lic) => [
