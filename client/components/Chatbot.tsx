@@ -91,21 +91,10 @@ export default function Chatbot() {
   const handleSendMessage = async () => {
     if (!input.trim() || !activeConversation) return;
 
-    if (!canSendMessage()) {
-      const errorMessage: Message = {
-        id: Date.now().toString(),
-        content: `You have reached your message limit (100 messages) on the Free plan. Upgrade to continue.`,
-        sender: "assistant",
-        timestamp: new Date(),
-      };
+    const limitInfo = getMessageLimitInfo();
 
-      setConversations((prev) =>
-        prev.map((conv) =>
-          conv.id === activeConversationId
-            ? { ...conv, messages: [...conv.messages, errorMessage] }
-            : conv,
-        ),
-      );
+    if (!limitInfo.canSend) {
+      setShowUpgradeModal(true);
       return;
     }
 
@@ -166,7 +155,7 @@ export default function Chatbot() {
         ),
       );
 
-      await incrementMessageCount();
+      await checkAndSendMessage(async () => {});
     } catch (error) {
       const errorMessage: Message = {
         id: (Date.now() + 1).toString(),
