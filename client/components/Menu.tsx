@@ -201,7 +201,7 @@ export default function Menu({ isDark, onThemeToggle }: MenuProps) {
               {/* Paramètres */}
               <button
                 onClick={handleMenuItemClick}
-                className="w-full flex items-center gap-3 px-4 py-2 rounded-lg text-left text-black dark:text-white hover:bg-gray-100 dark:hover:bg-gray-900 transition-colors duration-200 text-sm"
+                className="w-full flex items-center gap-3 px-4 py-2 text-left text-black dark:text-white transition-all duration-200 text-sm hover:backdrop-blur-md hover:bg-white/10 dark:hover:bg-white/8 rounded-lg"
               >
                 <Settings size={18} />
                 <span className="font-medium">Paramètres</span>
@@ -210,7 +210,7 @@ export default function Menu({ isDark, onThemeToggle }: MenuProps) {
               {/* Profil */}
               <button
                 onClick={handleMenuItemClick}
-                className="w-full flex items-center gap-3 px-4 py-2 rounded-lg text-left text-black dark:text-white hover:bg-gray-100 dark:hover:bg-gray-900 transition-colors duration-200 text-sm"
+                className="w-full flex items-center gap-3 px-4 py-2 text-left text-black dark:text-white transition-all duration-200 text-sm hover:backdrop-blur-md hover:bg-white/10 dark:hover:bg-white/8 rounded-lg"
               >
                 <User size={18} />
                 <span className="font-medium">Profil</span>
@@ -219,7 +219,7 @@ export default function Menu({ isDark, onThemeToggle }: MenuProps) {
               {/* Aide */}
               <button
                 onClick={handleMenuItemClick}
-                className="w-full flex items-center gap-3 px-4 py-2 rounded-lg text-left text-black dark:text-white hover:bg-gray-100 dark:hover:bg-gray-900 transition-colors duration-200 text-sm"
+                className="w-full flex items-center gap-3 px-4 py-2 text-left text-black dark:text-white transition-all duration-200 text-sm hover:backdrop-blur-md hover:bg-white/10 dark:hover:bg-white/8 rounded-lg"
               >
                 <HelpCircle size={18} />
                 <span className="font-medium">Aide</span>
