@@ -26,7 +26,9 @@ interface Conversation {
 
 export default function Chatbot() {
   const navigate = useNavigate();
-  const { user, canSendMessage, incrementMessageCount } = useAuth();
+  const { user } = useAuth();
+  const { getMessageLimitInfo, handleSendMessage: checkAndSendMessage, showUpgradeModal, setShowUpgradeModal } = useMessageLimit();
+
   const [conversations, setConversations] = useState<Conversation[]>(() => {
     const newId = Date.now().toString();
     return [
@@ -45,7 +47,6 @@ export default function Chatbot() {
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isDark, setIsDark] = useState(false);
-  const [licenseDialogOpen, setLicenseDialogOpen] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const activeConversation = conversations.find(
