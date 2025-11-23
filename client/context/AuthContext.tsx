@@ -15,7 +15,14 @@ import { auth, db } from "@/lib/firebase";
 import { doc, setDoc, getDoc } from "firebase/firestore";
 import { checkSecurityBeforeAuth } from "@/lib/securityCheck";
 
-export type Plan = "Gratuit" | "Plus" | "Entreprise";
+export type Plan = "Gratuit" | "Forfait Classique" | "Forfait Pro";
+
+export interface License {
+  key: string;
+  plan: Plan;
+  expiresAt: string;
+  daysRemaining: number;
+}
 
 export interface User {
   id: string;
@@ -23,7 +30,9 @@ export interface User {
   email: string;
   plan: Plan;
   messageCount?: number;
-  licenseKey?: string;
+  todayMessageCount?: number;
+  messageCountDate?: string;
+  license?: License;
 }
 
 interface AuthContextType {
@@ -33,9 +42,9 @@ interface AuthContextType {
   register: (name: string, email: string, password: string) => Promise<void>;
   login: (email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
-  updatePlan: (plan: Plan) => Promise<void>;
+  activateLicense: (licenseKey: string) => Promise<void>;
   incrementMessageCount: () => Promise<void>;
-  canSendMessage: () => boolean;
+  canSendMessage: () => { allowed: boolean; reason?: string };
   error: string | null;
 }
 
@@ -64,11 +73,39 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
               if (userDoc.exists()) {
                 const userData = userDoc.data();
+                let currentPlan = userData.plan || "Gratuit";
+                let license = undefined;
+
+                if (userData.license && userData.license.expiresAt) {
+                  const expiresAt = new Date(userData.license.expiresAt);
+                  const now = new Date();
+                  const daysRemaining = Math.ceil(
+                    (expiresAt.getTime() - now.getTime()) /
+                      (1000 * 60 * 60 * 24),
+                  );
+
+                  if (daysRemaining > 0) {
+                    license = {
+                      key: userData.license.key,
+                      plan: userData.license.plan,
+                      expiresAt: userData.license.expiresAt,
+                      daysRemaining,
+                    };
+                    currentPlan = userData.license.plan;
+                  } else {
+                    currentPlan = "Gratuit";
+                  }
+                }
+
                 setUser({
                   id: firebaseUser.uid,
                   name: userData.name,
                   email: firebaseUser.email || "",
-                  plan: userData.plan || "Gratuit",
+                  plan: currentPlan,
+                  messageCount: userData.messageCount || 0,
+                  todayMessageCount: userData.todayMessageCount || 0,
+                  messageCountDate: userData.messageCountDate,
+                  license,
                 });
               } else {
                 setUser({
@@ -223,19 +260,43 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  const updatePlan = async (plan: Plan): Promise<void> => {
+  const activateLicense = async (licenseKey: string): Promise<void> => {
     if (!user) return;
 
     try {
       setError(null);
-      // Update user plan in Firestore
-      await setDoc(doc(db, "users", user.id), { plan }, { merge: true });
+      const response = await fetch("/api/activate-license", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userId: user.id, licenseKey }),
+      });
 
-      // Update local state
-      setUser({ ...user, plan });
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Failed to activate license");
+      }
+
+      const { license } = await response.json();
+      const expiresAt = new Date(license.expiresAt);
+      const now = new Date();
+      const daysRemaining = Math.ceil(
+        (expiresAt.getTime() - now.getTime()) / (1000 * 60 * 60 * 24),
+      );
+
+      const updatedUser = {
+        ...user,
+        plan: license.plan,
+        license: {
+          key: licenseKey,
+          plan: license.plan,
+          expiresAt: license.expiresAt,
+          daysRemaining,
+        },
+      };
+      setUser(updatedUser);
     } catch (err) {
       const errorMsg =
-        err instanceof Error ? err.message : "Failed to update plan";
+        err instanceof Error ? err.message : "Failed to activate license";
       setError(errorMsg);
       throw err;
     }
@@ -245,22 +306,73 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     if (!user) return;
 
     try {
-      const newCount = (user.messageCount || 0) + 1;
+      const today = new Date().toISOString().split("T")[0];
+      const lastCountDate = user.messageCountDate?.split("T")[0];
+      let todayCount = user.todayMessageCount || 0;
+      let totalCount = user.messageCount || 0;
+
+      if (lastCountDate !== today) {
+        todayCount = 1;
+      } else {
+        todayCount = (todayCount || 0) + 1;
+      }
+      totalCount = (totalCount || 0) + 1;
+
       await setDoc(
         doc(db, "users", user.id),
-        { messageCount: newCount },
+        {
+          messageCount: totalCount,
+          todayMessageCount: todayCount,
+          messageCountDate: new Date().toISOString(),
+        },
         { merge: true },
       );
-      setUser({ ...user, messageCount: newCount });
+
+      setUser({
+        ...user,
+        messageCount: totalCount,
+        todayMessageCount: todayCount,
+        messageCountDate: new Date().toISOString(),
+      });
     } catch (err) {
       console.error("Failed to increment message count:", err);
     }
   };
 
-  const canSendMessage = (): boolean => {
-    if (!user) return false;
-    if (user.plan !== "Gratuit") return true;
-    return (user.messageCount || 0) < 100;
+  const canSendMessage = (): { allowed: boolean; reason?: string } => {
+    if (!user) return { allowed: false, reason: "Not authenticated" };
+
+    if (user.plan === "Gratuit") {
+      if ((user.messageCount || 0) >= 10) {
+        return {
+          allowed: false,
+          reason: "Free plan limit reached (10 messages)",
+        };
+      }
+      return { allowed: true };
+    }
+
+    if (user.plan === "Forfait Classique") {
+      if ((user.todayMessageCount || 0) >= 1000) {
+        return {
+          allowed: false,
+          reason: "Daily limit reached (1000 messages)",
+        };
+      }
+      return { allowed: true };
+    }
+
+    if (user.plan === "Forfait Pro") {
+      if ((user.todayMessageCount || 0) >= 5000) {
+        return {
+          allowed: false,
+          reason: "Daily limit reached (5000 messages)",
+        };
+      }
+      return { allowed: true };
+    }
+
+    return { allowed: false };
   };
 
   return (
@@ -272,7 +384,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         register,
         login,
         logout,
-        updatePlan,
+        activateLicense,
         incrementMessageCount,
         canSendMessage,
         error,

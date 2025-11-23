@@ -1,7 +1,4 @@
-import "./global.css";
-
 import { Toaster } from "@/components/ui/toaster";
-import { createRoot } from "react-dom/client";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -11,7 +8,7 @@ import Index from "./pages/Index";
 import Register from "./pages/Register";
 import Login from "./pages/Login";
 import Admin from "./pages/Admin";
-import AdminPanel from "./pages/AdminPanel";
+import AdminMaintenance from "./components/AdminMaintenance";
 import Settings from "./pages/Settings";
 import NotFound from "./pages/NotFound";
 import { useEffect, useState } from "react";
@@ -72,17 +69,7 @@ const AppRoutes = () => {
   }, []);
 
   if (adminPanelOpen) {
-    return (
-      <div>
-        <AdminPanel />
-        <button
-          onClick={() => setAdminPanelOpen(false)}
-          className="fixed top-4 right-4 bg-gray-700 text-white px-4 py-2 rounded"
-        >
-          Close
-        </button>
-      </div>
-    );
+    return <AdminMaintenance />;
   }
 
   return (
@@ -113,7 +100,7 @@ const AppRoutes = () => {
           </ProtectedRoute>
         }
       />
-      <Route path="/admin-panel" element={<AdminPanel />} />
+      <Route path="/admin-panel" element={<AdminMaintenance />} />
       {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
       <Route path="*" element={<NotFound />} />
     </Routes>
@@ -134,4 +121,4 @@ const App = () => (
   </AuthProvider>
 );
 
-createRoot(document.getElementById("root")!).render(<App />);
+export default App;

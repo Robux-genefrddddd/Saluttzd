@@ -5,9 +5,10 @@ import Menu from "./Menu";
 import Sidebar from "./Sidebar";
 import InputArea from "./InputArea";
 import CodeBlock from "./CodeBlock";
-import LicenseDialog from "./LicenseDialog";
+import UpgradeModal from "./UpgradeModal";
 import { parseCodeBlocks } from "@/lib/codeDisplay";
 import { useAuth } from "@/hooks/useAuth";
+import { useMessageLimit } from "@/hooks/useMessageLimit";
 
 interface Message {
   id: string;
@@ -25,7 +26,14 @@ interface Conversation {
 
 export default function Chatbot() {
   const navigate = useNavigate();
-  const { user, canSendMessage, incrementMessageCount } = useAuth();
+  const { user } = useAuth();
+  const {
+    getMessageLimitInfo,
+    handleSendMessage: checkAndSendMessage,
+    showUpgradeModal,
+    setShowUpgradeModal,
+  } = useMessageLimit();
+
   const [conversations, setConversations] = useState<Conversation[]>(() => {
     const newId = Date.now().toString();
     return [
@@ -44,7 +52,6 @@ export default function Chatbot() {
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isDark, setIsDark] = useState(false);
-  const [licenseDialogOpen, setLicenseDialogOpen] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const activeConversation = conversations.find(
@@ -89,21 +96,10 @@ export default function Chatbot() {
   const handleSendMessage = async () => {
     if (!input.trim() || !activeConversation) return;
 
-    if (!canSendMessage()) {
-      const errorMessage: Message = {
-        id: Date.now().toString(),
-        content: `You have reached your message limit (100 messages) on the Free plan. Upgrade to continue.`,
-        sender: "assistant",
-        timestamp: new Date(),
-      };
+    const limitInfo = getMessageLimitInfo();
 
-      setConversations((prev) =>
-        prev.map((conv) =>
-          conv.id === activeConversationId
-            ? { ...conv, messages: [...conv.messages, errorMessage] }
-            : conv,
-        ),
-      );
+    if (!limitInfo.canSend) {
+      setShowUpgradeModal(true);
       return;
     }
 
@@ -164,7 +160,7 @@ export default function Chatbot() {
         ),
       );
 
-      await incrementMessageCount();
+      await checkAndSendMessage(async () => {});
     } catch (error) {
       const errorMessage: Message = {
         id: (Date.now() + 1).toString(),
@@ -230,20 +226,44 @@ export default function Chatbot() {
             borderColor: "#1A1A1A",
           }}
         >
-          {/* Left: Title and Counter */}
+          {/* Left: Title and Plan Info */}
           <div className="min-w-0 flex items-center gap-4">
             <div>
-              <h1
-                className="text-xl sm:text-2xl font-bold truncate"
-                style={{ color: "#FFFFFF" }}
-              >
-                Chat
-              </h1>
-              {user?.plan === "Gratuit" && (
-                <p className="text-xs" style={{ color: "#999999" }}>
-                  Messages: {user?.messageCount || 0}/100
-                </p>
-              )}
+              <div className="flex items-center gap-3">
+                <h1
+                  className="text-xl sm:text-2xl font-bold truncate"
+                  style={{ color: "#FFFFFF" }}
+                >
+                  {user?.name}
+                </h1>
+                <span
+                  className="text-xs px-2 py-1 rounded-full font-semibold"
+                  style={{
+                    backgroundColor:
+                      user?.plan === "Gratuit"
+                        ? "#1A1A1A"
+                        : user?.plan === "Forfait Classique"
+                          ? "#064E3B"
+                          : "#0D3B66",
+                    color:
+                      user?.plan === "Gratuit"
+                        ? "#CCCCCC"
+                        : user?.plan === "Forfait Classique"
+                          ? "#10B981"
+                          : "#0A84FF",
+                  }}
+                >
+                  {user?.plan}
+                  {user?.license?.daysRemaining && (
+                    <span> ({user.license.daysRemaining}d)</span>
+                  )}
+                </span>
+              </div>
+              <p className="text-xs mt-1" style={{ color: "#888888" }}>
+                {user?.plan === "Gratuit"
+                  ? `Messages: ${user?.messageCount || 0}/10`
+                  : `Today: ${user?.todayMessageCount || 0}/${user?.plan === "Forfait Classique" ? "1000" : "5000"}`}
+              </p>
             </div>
           </div>
 
@@ -252,7 +272,7 @@ export default function Chatbot() {
             {/* Upgrade Button - Only for Free Plan */}
             {user?.plan === "Gratuit" && (
               <button
-                onClick={() => setLicenseDialogOpen(true)}
+                onClick={() => setShowUpgradeModal(true)}
                 className="flex items-center gap-2 px-3 py-2 rounded-lg transition-colors duration-200"
                 title="Upgrade plan"
                 style={{
@@ -427,10 +447,11 @@ export default function Chatbot() {
         />
       </div>
 
-      {/* License Dialog */}
-      <LicenseDialog
-        isOpen={licenseDialogOpen}
-        onClose={() => setLicenseDialogOpen(false)}
+      {/* Upgrade Modal */}
+      <UpgradeModal
+        isOpen={showUpgradeModal}
+        onClose={() => setShowUpgradeModal(false)}
+        reason={getMessageLimitInfo().reason}
       />
     </div>
   );
