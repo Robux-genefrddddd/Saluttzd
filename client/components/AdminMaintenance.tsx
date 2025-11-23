@@ -120,6 +120,9 @@ export default function AdminMaintenance() {
   };
 
   const handleGenerateLicense = () => {
+    const expiresAt = new Date();
+    expiresAt.setDate(expiresAt.getDate() + expirationDays);
+
     const newLicenses: License[] = [];
     for (let i = 0; i < bulkCount; i++) {
       newLicenses.push({
@@ -129,6 +132,7 @@ export default function AdminMaintenance() {
         createdAt: new Date(),
         isActive: true,
         status: maintenanceMode ? "maintenance" : "active",
+        expiresAt: expiresAt.toISOString(),
       });
     }
 
@@ -136,6 +140,7 @@ export default function AdminMaintenance() {
     setLicenses(updated);
     localStorage.setItem("admin_licenses", JSON.stringify(updated));
     setBulkCount(1);
+    setExpirationDays(30);
   };
 
   const handleCopyLicense = async (key: string) => {
