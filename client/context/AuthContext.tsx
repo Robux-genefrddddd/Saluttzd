@@ -175,7 +175,14 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       setError(null);
       setIsLoading(true);
 
-      // Sign in with Firebase Auth
+      const securityCheck = await checkSecurityBeforeAuth(email, false);
+
+      if (!securityCheck.allowed) {
+        const errorMsg = securityCheck.reason || "Login blocked by security check";
+        setError(errorMsg);
+        throw new Error(errorMsg);
+      }
+
       const userCredential = await signInWithEmailAndPassword(
         auth,
         email,
@@ -183,7 +190,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       );
       const firebaseUser = userCredential.user;
 
-      // Fetch user profile from Firestore
       const userDoc = await getDoc(doc(db, "users", firebaseUser.uid));
       if (userDoc.exists()) {
         const userData = userDoc.data();
