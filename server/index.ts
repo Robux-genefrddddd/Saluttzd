@@ -3,6 +3,7 @@ import express from "express";
 import cors from "cors";
 import { handleDemo } from "./routes/demo";
 import { handleChat } from "./routes/chat";
+import { handleSecurityCheck } from "./routes/security";
 
 export function createServer() {
   const app = express();
@@ -22,6 +23,9 @@ export function createServer() {
 
   // Chat API route
   app.post("/api/chat", handleChat);
+
+  // Security check route
+  app.post("/api/security/check", handleSecurityCheck);
 
   return app;
 }
