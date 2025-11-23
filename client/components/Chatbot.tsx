@@ -3,6 +3,9 @@ import { Send, Plus, User } from "lucide-react";
 import Menu from "./Menu";
 import Sidebar from "./Sidebar";
 import InputArea from "./InputArea";
+import CodeBlock from "./CodeBlock";
+import { parseCodeBlocks } from "@/lib/codeDisplay";
+import { useAuth } from "@/hooks/useAuth";
 
 interface Message {
   id: string;
