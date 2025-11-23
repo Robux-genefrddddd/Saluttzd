@@ -5,9 +5,10 @@ import Menu from "./Menu";
 import Sidebar from "./Sidebar";
 import InputArea from "./InputArea";
 import CodeBlock from "./CodeBlock";
-import LicenseDialog from "./LicenseDialog";
+import UpgradeModal from "./UpgradeModal";
 import { parseCodeBlocks } from "@/lib/codeDisplay";
 import { useAuth } from "@/hooks/useAuth";
+import { useMessageLimit } from "@/hooks/useMessageLimit";
 
 interface Message {
   id: string;
